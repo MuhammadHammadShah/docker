@@ -1,0 +1,111 @@
+=========================================
+        🚀 MongoDB with Docker Setup
+=========================================
+
+1. 🛠 Create a Custom Network
+-----------------------------
+docker network create mongo-network
+
+
+2. 🐳 Run MongoDB Container
+-----------------------------
+docker run -d -p 27017:27017 --name mongo --network mongo-network -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=qwerty mongo
+
+
+3. 🌐 Run Mongo Express (Web UI)
+---------------------------------
+docker run -d -p 8081:8081 --name mongo-express --network mongo-network -e ME_CONFIG_MONGODB_ADMINUSERNAME=admin -e ME_CONFIG_MONGODB_ADMINPASSWORD=qwerty -e ME_CONFIG_MONGODB_URL="mongodb://admin:qwerty@mongo:27017" mongo-express
+
+
+🔐 Mongo Express Login
+------------------------
+Username: admin  
+Password: pass
+
+
+=========================================
+   🧠 Docker Compose Networking Notes
+=========================================
+
+✔ Docker Compose automatically creates a default network:
+   ➤ Format: `<project-folder-name>_default`  
+   ➤ All services in the Compose file are auto-connected to this.
+
+✔ Inspect Docker networks:
+   docker network inspect <network_name>
+
+Example:
+   docker network inspect learndockercompose_default
+
+
+✔ Essential Compose Commands:
+------------------------------
+Start services:
+   docker compose -f <fileName>.yaml up -d
+
+Stop and clean up:
+   docker compose -f <fileName>.yaml down
+
+
+=========================================
+     🧱 Docker Image Concept Recap
+=========================================
+
+      +---------------+
+      |   Base Image  |
+      |  (e.g., Node) |
+      +---------------+
+             ↓
+      +-------------------+
+      |   Custom Image    |
+      |  (Your App Code)  |
+      +-------------------+
+
+💡 You begin with a base image (e.g., `node`, `python`, `mongo`),  
+then add your source code and dependencies to build a **custom image**  
+tailored to your application.
+
+
+=========================================
+     📄 Essential Dockerfile Commands
+=========================================
+
+FROM       → Defines the base image (e.g., `node:alpine`, `python:3.12`)  
+WORKDIR    → Sets the working directory inside the container  
+COPY . .   → Copies files from host into the container (can be multiple)  
+RUN        → Executes shell commands during build (can be multiple)  
+ENV        → Sets environment variables  
+EXPOSE     → Documents which ports will be used  
+CMD        → Sets the default command to run (only one allowed)  
+
+🔥 Pro Tip:  
+Use `RUN` for installation/configuration during image build.  
+Use `CMD` to start the app when the container runs.
+
+
+docker build -t testapp:1.0 . { -t => tag } { dont know what this . do :D }
+
+docker run testapp:1.0
+
+docker run -it testapp:1.0 bash
+ls
+cd testapp
+
+
+-v absolute path : container path
+
+docker run -it -v C:\Users\HP\Desktop\data:/test/data ubuntu  { : after this, is for linux so writing path way got different } [ host_dir:cont_dir ]
+
+ volumes:
+   - /c/Users/HP/Desktop/data:/data/db
+
+| Tool             | Path Handling                                                             |
+| ---------------- | ------------------------------------------------------------------------- |
+| `docker run`     | CLI level hota hai, Windows-style paths (`C:\Users\...`) accept karta hai |
+| `docker-compose` | YAML-based file hai, jo Linux-style path chahta hai (`/c/Users/...`)      |
+
+
+
+docker volume create my-volume
+docker volume ls
+docker volume rm my-volume
